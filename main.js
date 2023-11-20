@@ -110,18 +110,14 @@ $(document).ready(function () {
         snakeLength++;
         food.splice(i, 1);
         score++;
-  
-        // Update highest score if the current score is higher
         if (score > highestScore) {
           highestScore = score;
         }
-  
-        // Update the score display on your HTML
         $(".score").text("Score: " + score);
         $(".highestscore").text("Highest Score: " + highestScore);
       }
     }
-  
+
     for (var i = 1; i < snakeParts.length; i++) {
       if (snakeX === snakeParts[i].x && snakeY === snakeParts[i].y) {
         gameOver();
@@ -133,14 +129,10 @@ $(document).ready(function () {
 
 
   function gameOver() {
-    // Check if the current score is higher than the highest score
     if (score > highestScore) {
       highestScore = score;
     }
-  
-    // Update the highest score display on your HTML
     $(".highestscore").text("Highest Score: " + highestScore);
-  
     setTimeout(function () {
       alert("Game over!");
       // Reset the score
