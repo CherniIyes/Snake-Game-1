@@ -16,15 +16,32 @@ $(document).ready(function () {
 
 
   var food = []
+  
+
+  var score = 0
+  var highestScore = 0
 
   function move() {
+    snakeX += directionX;
+    snakeY += directionY;
+  
+    if (snakeX >= canvas.width) {
+      snakeX = 0;
+    } else if (snakeX < 0) {
+      snakeX = canvas.width - 10
+    }
+  
+    if (snakeY >= canvas.height) {
+      snakeY = 0;
+    } else if (snakeY < 0) {
+      snakeY = canvas.height - 10
+    }
+  
     snakeParts.unshift({
       x: snakeX,
       y: snakeY
-
-    });
-    snakeX += directionX
-    snakeY += directionY
+    })
+  
     while (snakeParts.length > snakeLength) {
       snakeParts.pop();
     }
@@ -46,11 +63,11 @@ $(document).ready(function () {
     spawnmekla()
     checkCollision()
     if (!gameEnded) {
-      setTimeout(gameLoop, 100);
+      setTimeout(gameLoop, 100)
     }
   }
 
-  setInterval(gameLoop, 100);
+  gameInterval = setInterval(gameLoop, 100)
 
   // KeyboardEvent.code
   document.onkeydown = function (event) {
@@ -79,23 +96,59 @@ $(document).ready(function () {
     if (food.length < 10) {
       var meklaX = Math.floor(Math.random() * canvas.width);
       var meklaY = Math.floor(Math.random() * canvas.height);
-      food.push({ x: meklaX, y: meklaY });
+      food.push({ x: meklaX, y: meklaY })
     }
     for (var i = 0; i < food.length; i++) {
-      canvas2d.fillStyle = "red";
-      canvas2d.fillRect(food[i].x, food[i].y, 10, 10);
+      canvas2d.fillStyle = "red"
+      canvas2d.fillRect(food[i].x, food[i].y, 10, 10)
     }
   }
 
   function checkCollision() {
     for (var i = 0; i < food.length; i++) {
-      if (snakeX < food[i].x + 10 &&snakeX + 10 > food[i].x &&snakeY < food[i].y + 10 &&snakeY + 10 > food[i].y) {
+      if (snakeX < food[i].x + 10 && snakeX + 10 > food[i].x && snakeY < food[i].y + 10 && snakeY + 10 > food[i].y) {
         snakeLength++;
         food.splice(i, 1);
+        score++;
+  
+        // Update highest score if the current score is higher
+        if (score > highestScore) {
+          highestScore = score;
+        }
+  
+        // Update the score display on your HTML
+        $(".score").text("Score: " + score);
+        $(".highestscore").text("Highest Score: " + highestScore);
+      }
+    }
+  
+    for (var i = 1; i < snakeParts.length; i++) {
+      if (snakeX === snakeParts[i].x && snakeY === snakeParts[i].y) {
+        gameOver();
       }
     }
   }
 
+
+
+
+  function gameOver() {
+    // Check if the current score is higher than the highest score
+    if (score > highestScore) {
+      highestScore = score;
+    }
+  
+    // Update the highest score display on your HTML
+    $(".highestscore").text("Highest Score: " + highestScore);
+  
+    setTimeout(function () {
+      alert("Game over!");
+      // Reset the score
+      score = 0;
+      $(".score").text("Score: " + score);
+    }, 500);
+  
+    gameEnded = true;
+  }
+
 })
-
-
